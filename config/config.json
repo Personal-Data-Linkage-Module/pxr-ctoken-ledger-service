@@ -1,0 +1,13 @@
+{
+    "operator": {
+        "session": "http://localhost:3000/operator/session"
+    },
+    "catalog": {
+        "get": "http://localhost:3001/catalog",
+        "getCatalogName": "http://localhost:3001/catalog/name"
+    },
+    "bookManage": {
+        "search": "http://localhost:3005/book-manage/search?disableFlg=1"
+    },
+    "timezone": "Asia/Tokyo"
+}

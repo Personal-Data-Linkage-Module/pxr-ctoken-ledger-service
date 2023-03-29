@@ -1,0 +1,134 @@
+{
+    "catalogItem": {
+      "ns": "catalog/ext/test-org/block/data-trader",
+      "name": "Data-Trader-Block",
+      "_code": {
+        "_value": "1000109",
+        "_ver": "1"
+      },
+      "inherit": {
+        "_value": "32",
+        "_ver": "1"
+      },
+      "description": "データ取引サービスプロバイダー用PXR-Blockの定義です。"
+    },
+    "template": {
+      "_code": {
+        "_value": "1000109",
+        "_ver": "1"
+      },
+      "actor-type": "data-trader",
+      "assigned-organization": "データ取引組織",
+      "assignment-status": "assigned",
+      "base-url": "test-org-trader.test.org",
+      "first-login-url": "https://www.test.org/login",
+      "id": "Data-Trader-01",
+      "pxr-portal-first-login-url": null,
+      "service-name": "test-org-trader-service"
+    },
+    "prop": [
+      {
+        "key": "actor-type",
+        "type": {
+          "of": "string",
+          "cmatrix": null,
+          "format": null,
+          "unit": null,
+          "candidate": {
+            "value": [
+              "pxr-root",
+              "region-root",
+              "app",
+              "wf",
+              "data-trader",
+              "consumer"
+            ]
+          }
+        },
+        "description": "このPXR-Blockを保有する組織の種別"
+      },
+      {
+        "key": "assigned-organization",
+        "type": {
+          "of": "string",
+          "cmatrix": null,
+          "format": null,
+          "unit": null,
+          "candidate": null
+        },
+        "description": "割当アクター名"
+      },
+      {
+        "key": "assignment-status",
+        "type": {
+          "of": "string",
+          "cmatrix": null,
+          "format": null,
+          "unit": null,
+          "candidate": {
+            "value": [
+              "assigned",
+              "unassigned"
+            ]
+          }
+        },
+        "description": "割当状態"
+      },
+      {
+        "key": "base-url",
+        "type": {
+          "of": "string",
+          "cmatrix": null,
+          "format": null,
+          "unit": null,
+          "candidate": null
+        },
+        "description": "PXR-BlockのベースURL"
+      },
+      {
+        "key": "first-login-url",
+        "type": {
+          "of": "string",
+          "cmatrix": null,
+          "format": null,
+          "unit": null,
+          "candidate": null
+        },
+        "description": "初回ログインURL"
+      },
+      {
+        "key": "id",
+        "type": {
+          "of": "string",
+          "cmatrix": null,
+          "format": null,
+          "unit": null,
+          "candidate": null
+        },
+        "description": "PXR-Block識別子"
+      },
+      {
+        "key": "pxr-portal-first-login-url",
+        "type": {
+          "of": "string",
+          "cmatrix": null,
+          "format": null,
+          "unit": null,
+          "candidate": null
+        },
+        "description": "個人向けポータル初回ログインURL"
+      },
+      {
+        "key": "service-name",
+        "type": {
+          "of": "string",
+          "cmatrix": null,
+          "format": null,
+          "unit": null,
+          "candidate": null
+        },
+        "description": "PXR-Blockのサービス名"
+      }
+    ],
+    "attribute": null
+  }
