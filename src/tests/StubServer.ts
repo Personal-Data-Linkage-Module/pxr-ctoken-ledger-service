@@ -29,6 +29,8 @@ const catalog1000114 = Config.ReadConfig('./src/tests/Catalog/1000114.json');
 const catalog1000214 = Config.ReadConfig('./src/tests/Catalog/1000214.json');
 const catalog1000314 = Config.ReadConfig('./src/tests/Catalog/1000314.json');
 const catalog1000115 = Config.ReadConfig('./src/tests/Catalog/1000115.json');
+const catalog1000511 = Config.ReadConfig('./src/tests/Catalog/1000511.json');
+const catalog1000512 = Config.ReadConfig('./src/tests/Catalog/1000512.json');
 
 export class CtokenLedgerServer {
     app: express.Express;
@@ -166,6 +168,10 @@ export class CatalogServer {
                     res.status(200).json(catalog1000314).end();
                 } else if (req.params.code + '' === 1000115 + '') {
                     res.status(200).json(catalog1000115).end();
+                } else if (req.params.code + '' === 1000511 + '') {
+                    res.status(200).json(catalog1000511).end();
+                } else if (req.params.code + '' === 1000512 + '') {
+                    res.status(200).json(catalog1000512).end();
                 } else {
                     res.status(204).end();
                 }
@@ -413,12 +419,110 @@ export class MyConditionBookManageServer {
                                     _value: '1000004',
                                     _ver: '1'
                                 },
-                                app: null,
-                                wf: {
+                                app: {
+                                    _value: '1000016',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                userId: 'wf-pj2-2-test-01',
+                                startAt: '2020-07-31T01:40:23.279+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000004',
+                                    _ver: '1'
+                                },
+                                app: {
+                                    _value: '1000015',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                userId: 'wf-pj2-2-test-01',
+                                startAt: '2020-07-31T01:40:23.279+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000004',
+                                    _ver: '1'
+                                },
+                                app: {
+                                    _value: '1000016',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                userId: 'wf-pj2-2-test-01',
+                                startAt: '2020-07-31T01:40:23.279+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000004',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
                                     _value: '1000007',
                                     _ver: '1'
                                 },
-                                userId: 'wf-pj2-2-test-01.1000007.wf',
+                                userId: 'wf-pj2-2-test-01',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000004',
+                                    _ver: '1'
+                                },
+                                app: null,
+                                wf: {
+                                    _value: '1000017',
+                                    _ver: '1'
+                                },
+                                userId: 'wf-pj2-2-test-01',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000014',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
+                                    _value: '1000007',
+                                    _ver: '1'
+                                },
+                                userId: 'wf-pj2-2-test-01',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000004',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
+                                    _value: '1000007',
+                                    _ver: '1'
+                                },
+                                userId: 'wf-pj2-2-test-01.1000007.app',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000004',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
+                                    _value: '1000107',
+                                    _ver: '1'
+                                },
+                                userId: 'wf-pj2-2-test-01.1000107.app',
                                 startAt: '2020-07-31T01:42:08.504+0900',
                                 status: 1
                             }
@@ -503,14 +607,284 @@ export class MyConditionBookManageServer {
                                     _value: '1000004',
                                     _ver: '1'
                                 },
+                                wf: null,
+                                app: {
+                                    _value: '1000007',
+                                    _ver: '1'
+                                },
+                                userId: 'wf-pj2-2-test-02.1000007.app',
+                                startAt: '2020-07-31T01:47:24.649+0900',
+                                status: 0
+                            }
+                        ],
+                        userInformation: [
+                            {
+                                template: {
+                                    _code: {
+                                        _value: 30001,
+                                        _ver: 1
+                                    },
+                                    'item-group': [
+                                        {
+                                            title: '氏名',
+                                            item: [
+                                                {
+                                                    title: '姓',
+                                                    type: {
+                                                        _value: 30019,
+                                                        _ver: 1
+                                                    },
+                                                    content: 'デモ０１'
+                                                },
+                                                {
+                                                    title: '名',
+                                                    type: {
+                                                        _value: 30020,
+                                                        _ver: 1
+                                                    },
+                                                    content: '太郎'
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            title: '性別',
+                                            item: [
+                                                {
+                                                    title: '性別',
+                                                    type: {
+                                                        _value: 30021,
+                                                        _ver: 1
+                                                    },
+                                                    content: '男'
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            title: '生年月日',
+                                            item: [
+                                                {
+                                                    title: '生年月日',
+                                                    type: {
+                                                        _value: 30022,
+                                                        _ver: 1
+                                                    },
+                                                    content: '2000-01-01'
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        pxrId: 'DuplicateUserIdA',
+                        attributes: null,
+                        cooperation: [
+                            {
+                                actor: {
+                                    _value: '1000511',
+                                    _ver: '1'
+                                },
                                 app: null,
                                 wf: {
                                     _value: '1000007',
                                     _ver: '1'
                                 },
-                                userId: 'wf-pj2-2-test-02.1000007.wf',
-                                startAt: '2020-07-31T01:47:24.649+0900',
-                                status: 0
+                                userId: 'wfUser01',
+                                startAt: '2020-07-31T01:40:23.279+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000511',
+                                    _ver: '1'
+                                },
+                                app: null,
+                                wf: {
+                                    _value: '1000017',
+                                    _ver: '1'
+                                },
+                                userId: 'wfUser01',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000511',
+                                    _ver: '1'
+                                },
+                                app: null,
+                                wf: {
+                                    _value: '1000007',
+                                    _ver: '1'
+                                },
+                                userId: 'wfUser02',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000511',
+                                    _ver: '1'
+                                },
+                                app: null,
+                                wf: {
+                                    _value: '1000027',
+                                    _ver: '1'
+                                },
+                                userId: 'user03',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000512',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
+                                    _value: '1000107',
+                                    _ver: '1'
+                                },
+                                userId: 'appUser01',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000512',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
+                                    _value: '1000117',
+                                    _ver: '1'
+                                },
+                                userId: 'appUser01',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000512',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
+                                    _value: '1000107',
+                                    _ver: '1'
+                                },
+                                userId: 'appUser02',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            }
+                        ],
+                        userInformation: [
+                            {
+                                template: {
+                                    _code: {
+                                        _value: 30001,
+                                        _ver: 1
+                                    },
+                                    'item-group': [
+                                        {
+                                            title: '氏名',
+                                            item: [
+                                                {
+                                                    title: '姓',
+                                                    type: {
+                                                        _value: 30019,
+                                                        _ver: 1
+                                                    },
+                                                    content: 'デモ０１'
+                                                },
+                                                {
+                                                    title: '名',
+                                                    type: {
+                                                        _value: 30020,
+                                                        _ver: 1
+                                                    },
+                                                    content: '太郎'
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            title: '性別',
+                                            item: [
+                                                {
+                                                    title: '性別',
+                                                    type: {
+                                                        _value: 30021,
+                                                        _ver: 1
+                                                    },
+                                                    content: '男'
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            title: '生年月日',
+                                            item: [
+                                                {
+                                                    title: '生年月日',
+                                                    type: {
+                                                        _value: 30022,
+                                                        _ver: 1
+                                                    },
+                                                    content: '2000-01-01'
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        pxrId: 'DuplicateUserIdB',
+                        attributes: null,
+                        cooperation: [
+                            {
+                                actor: {
+                                    _value: '1000511',
+                                    _ver: '1'
+                                },
+                                app: null,
+                                wf: {
+                                    _value: '1000017',
+                                    _ver: '1'
+                                },
+                                userId: 'wfUser02',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000512',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
+                                    _value: '1000117',
+                                    _ver: '1'
+                                },
+                                userId: 'appUser02',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            },
+                            {
+                                actor: {
+                                    _value: '1000512',
+                                    _ver: '1'
+                                },
+                                wf: null,
+                                app: {
+                                    _value: '1000127',
+                                    _ver: '1'
+                                },
+                                userId: 'user03',
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
                             }
                         ],
                         userInformation: [

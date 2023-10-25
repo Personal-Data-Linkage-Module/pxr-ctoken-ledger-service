@@ -35,14 +35,27 @@ export class EntityOperation {
     }
 
     /**
+     * IDでCTokenを取得
+     * @param em
+     * @param pxrId
+     */
+    static async getCTokenById (em: EntityManager, id: number): Promise<CTokenEntity> {
+        const repository = em.getRepository(CTokenEntity);
+        const sql = repository.createQueryBuilder('ctoken')
+            .where('ctoken.id = :id', { id: id })
+            .andWhere('ctoken.isDisabled = false');
+        const result = await sql.getOne();
+        return result;
+    }
+
+    /**
      * 各 Identifier が指定された rowhash を保持する CMatrix を取得
      * @param em
-     * @param ctokenId
      * @param docIdentifier
      * @param eventIdentifier
      * @param thingIdentifier
      */
-    static async getCMatrixByIdentifier (em: EntityManager, ctokenId: number, docIdentifier: string[], eventIdentifier: string[], thingIdentifier: string[]): Promise<CMatrixEntity[]> {
+    static async getCMatrixByIdentifier (em: EntityManager, docIdentifier: string[], eventIdentifier: string[], thingIdentifier: string[]): Promise<CMatrixEntity[]> {
         const repository = em.getRepository(CMatrixEntity);
         const query = repository.createQueryBuilder('cmatrix')
             .innerJoinAndSelect(
@@ -55,8 +68,7 @@ export class EntityOperation {
                 'documents',
                 'documents.isDisabled = false'
             )
-            .where('cmatrix.ctokenId = :ctokenId', { ctokenId: ctokenId })
-            .andWhere('cmatrix.isDisabled = false');
+            .where('cmatrix.isDisabled = false');
         if (docIdentifier && Array.isArray(docIdentifier) && docIdentifier.length > 0) {
             query.andWhere('documents.docIdentifier in (:...docIdentifier)', { docIdentifier: docIdentifier });
         }
