@@ -274,11 +274,9 @@ describe('Ctoken-Ledger Service', () => {
                         app: { _value: 1000007 },
                         document: [{ _code: { _value: 1000004, _ver: 1 }, count: 1 }],
                         event: [
-                            //{ _code: { _value: 1000005, _ver: 1 }, count: 1 },
                             { _code: { _value: 1000008, _ver: 1 }, count: 1 }
                         ],
                         thing: [
-                            //{ _code: { _value: 1000006, _ver: 1 }, count: 1 },
                             { _code: { _value: 1000011, _ver: 1 }, count: 1 }
                         ]
                     },
