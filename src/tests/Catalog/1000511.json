@@ -1,0 +1,41 @@
+{
+    "catalogItem": {
+      "ns": "catalog/ext/test-org/actor/wf",
+      "name": "テストアクターカタログWF",
+      "_code": {
+        "_value": 1000511,
+        "_ver": 1
+      },
+      "inherit": {
+        "_value": 50,
+        "_ver": null
+      },
+      "description": "ワークフローアクターの定義です。"
+    },
+    "template": {
+      "_code": {
+        "_value": 1000511,
+        "_ver": 1
+      },
+      "wf": [
+        {
+          "_value": 1000007,
+          "_ver": 1
+        },
+        {
+          "_value": 1000017,
+          "_ver": 1
+        },
+        {
+          "_value": 1000027,
+          "_ver": 1
+        }
+      ],
+      "main-block": {
+          "_value": 1000110,
+          "_ver": 1
+      }
+    },
+    "prop": [],
+    "attribute": null
+}
