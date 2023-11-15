@@ -71,7 +71,6 @@ export default class LocalService {
         let exists = false;
         // 必須パラメータのcmatrix.eventからactor, wf, appコード取得
         const cmatrixActorCode = cmatrix.event.eventActorCode;
-        //const cmatrixWfCode = cmatrix.event.eventWfCatalogCode;
         const cmatrixAppCode = cmatrix.event.eventAppCatalogCode;
 
         for (const book of books) {
@@ -80,7 +79,6 @@ export default class LocalService {
                     if (cooperation['userId'] === cmatrix.userId &&
                         Number(cooperation['actor']['_value']) === Number(cmatrixActorCode) &&
                         (
-                            //(cooperation['wf'] && Number(cooperation['wf']['_value']) === Number(cmatrixWfCode)) ||
                             (cooperation['app'] && Number(cooperation['app']['_value']) === Number(cmatrixAppCode))
                         )
                     ) {
