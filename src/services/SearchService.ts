@@ -40,14 +40,14 @@ export default class SearchService {
         const conditionList: {}[] = request['condition'];
 
         // 検索条件リストからAND条件のみを抽出
-        const andConditionList: {}[] = conditionList.filter((element: {}) => {
+        const andConditionList: {}[] = conditionList.filter((element: {}) => { // eslint-disable-line array-callback-return
             if (element['type'] === 'and') {
                 return true;
             }
         });
 
         // 検索条件リストからOR条件のみを抽出
-        const orConditionList: {}[] = conditionList.filter((element: {}) => {
+        const orConditionList: {}[] = conditionList.filter((element: {}) => { // eslint-disable-line array-callback-return
             if (element['type'] === 'or') {
                 return true;
             }
@@ -149,7 +149,7 @@ export default class SearchService {
         const tempAndCounts: any[] = [];
         for (let andIndex = 0; andIndex < andConditionList.length; andIndex++) {
             // 対象種別を取得
-            const type = catalogCheckResult.find((element: {}) => {
+            const type = catalogCheckResult.find((element: {}) => { // eslint-disable-line array-callback-return
                 if (element['_code']['_value'] === andConditionList[andIndex]['_code']['_value'] &&
                     element['_code']['_value'] === andConditionList[andIndex]['_code']['_value']) {
                     return true;
@@ -176,7 +176,7 @@ export default class SearchService {
         const tempOrCounts: any[] = [];
         for (let orIndex = 0; orIndex < orConditionList.length; orIndex++) {
             // 対象種別を取得
-            const type = catalogCheckResult.find((element: {}) => {
+            const type = catalogCheckResult.find((element: {}) => { // eslint-disable-line array-callback-return
                 if (element['_code']['_value'] === orConditionList[orIndex]['_code']['_value'] &&
                     element['_code']['_value'] === orConditionList[orIndex]['_code']['_value']) {
                     return true;
@@ -335,7 +335,7 @@ export default class SearchService {
         if (dataCounts.length > 0) {
             const ctokens: CToken[] = [];
             for (const dataCount of dataCounts) {
-                let ctoken = ctokens.find((ele) => {
+                let ctoken = ctokens.find((ele) => { // eslint-disable-line array-callback-return
                     if (Number(ele.actor._value) === dataCount.actor) {
                         return true;
                     }

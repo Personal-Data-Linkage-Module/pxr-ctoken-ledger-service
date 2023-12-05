@@ -330,19 +330,19 @@ export default class PostLocalReqDto {
     @IsDefined()
     @ValidateNested()
     @Type(() => CMatrix)
-    add: CMatrix[];
+        add: CMatrix[];
 
     /** update */
     @IsArray()
     @IsDefined()
     @ValidateNested()
     @Type(() => CMatrix)
-    update: CMatrix[];
+        update: CMatrix[];
 
     /** delete */
     @IsArray()
     @IsDefined()
     @ValidateNested()
     @Type(() => CMatrixForDelete)
-    delete: CMatrixForDelete[];
+        delete: CMatrixForDelete[];
 }

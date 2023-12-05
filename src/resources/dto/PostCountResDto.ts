@@ -7,7 +7,7 @@ https://opensource.org/licenses/mit-license.php
 
 export default class PostCountResDto {
     /** 件数オブジェクト */
-    public ctoken: CToken[] = [];
+    public ctoken: CToken[] = []; // eslint-disable-line no-use-before-define
 
     /**
      * レスポンス用のオブジェクトに変換する
@@ -69,30 +69,30 @@ export default class PostCountResDto {
 
 export class CToken {
     /** アクターカタログコード */
-    public actor: CatalogCodeValue;
+    public actor: CatalogCodeValue; // eslint-disable-line no-use-before-define
 
     /** アプリケーションカタログコード */
-    public app?: CatalogCodeValue;
+    public app?: CatalogCodeValue; // eslint-disable-line no-use-before-define
 
     /** ワークフローカタログコード */
-    public wf?: CatalogCodeValue;
+    public wf?: CatalogCodeValue; // eslint-disable-line no-use-before-define
 
     /** ドキュメント件数 */
-    public document: DocEventThingCount[] = [];
+    public document: DocEventThingCount[] = []; // eslint-disable-line no-use-before-define
 
     /** イベント件数 */
-    public event: DocEventThingCount[] = [];
+    public event: DocEventThingCount[] = []; // eslint-disable-line no-use-before-define
 
     /** モノ件数 */
-    public thing: DocEventThingCount[] = [];
+    public thing: DocEventThingCount[] = []; // eslint-disable-line no-use-before-define
 }
 
 export class DocEventThingCount {
     /** イベント・モノカタログコード */
-    public _code: CatalogCodeValueVer;
+    public _code: CatalogCodeValueVer; // eslint-disable-line no-use-before-define
 
     /** 件数 */
-    public count: number
+    public count: number;
 }
 
 export class CatalogCodeValue {

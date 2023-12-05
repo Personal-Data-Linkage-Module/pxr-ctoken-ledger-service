@@ -127,7 +127,7 @@ export default class CountService {
      */
     private static createDocumentResponse (documentList: {}[], response: CToken[]) {
         for (let index = 0; index < documentList.length; index++) {
-            const ctokenIndex: number = response.findIndex((ctoken: CToken) => {
+            const ctokenIndex: number = response.findIndex((ctoken: CToken) => { // eslint-disable-line array-callback-return
                 if (Number(ctoken.actor._value) === Number(documentList[index]['actorCode'])) {
                     if (ctoken.app && Number(ctoken.app._value) === Number(documentList[index]['appCode'])) {
                         return true;
@@ -169,7 +169,7 @@ export default class CountService {
      */
     private static createEventResponse (eventList: {}[], response: CToken[]) {
         for (let index = 0; index < eventList.length; index++) {
-            const ctokenIndex: number = response.findIndex((ctoken: CToken) => {
+            const ctokenIndex: number = response.findIndex((ctoken: CToken) => { // eslint-disable-line array-callback-return
                 if (Number(ctoken.actor._value) === Number(eventList[index]['actorCode'])) {
                     if (ctoken.app && Number(ctoken.app._value) === Number(eventList[index]['appCode'])) {
                         return true;
@@ -211,7 +211,7 @@ export default class CountService {
      */
     private static createThingResponse (thingList: {}[], response: CToken[]) {
         for (let index = 0; index < thingList.length; index++) {
-            const ctokenIndex: number = response.findIndex((ctoken: CToken) => {
+            const ctokenIndex: number = response.findIndex((ctoken: CToken) => { // eslint-disable-line array-callback-return
                 if (Number(ctoken.actor._value) === Number(thingList[index]['actorCode'])) {
                     if (ctoken.app && Number(ctoken.app._value) === Number(thingList[index]['appCode'])) {
                         return true;
