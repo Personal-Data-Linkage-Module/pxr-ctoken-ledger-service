@@ -103,6 +103,7 @@ describe('Ctoken-Ledger Service', () => {
                 SET is_disabled = false
                 ;
             `);
+            await connection.destroy();
         });
         test('正常: 追加(個人)', async () => {
             _catalogServer = new CatalogServer(200);

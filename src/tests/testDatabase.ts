@@ -18,6 +18,7 @@ export async function clear () {
         SELECT SETVAL('pxr_ctoken_ledger.document_id_seq', 1, false);
         SELECT SETVAL('pxr_ctoken_ledger.row_hash_id_seq', 1, false);
     `);
+    await connection.destroy();
 }
 
 export async function insertInitialData () {
@@ -356,4 +357,5 @@ export async function insertInitialData () {
         NOW()
     );
     `);
+    await connection.destroy();
 }
