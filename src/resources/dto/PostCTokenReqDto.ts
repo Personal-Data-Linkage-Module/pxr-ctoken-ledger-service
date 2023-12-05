@@ -19,13 +19,13 @@ export class SearchPeriod {
     /** 検索対象開始日時 */
     @IsDate()
     @IsOptional()
-    @Transform(transformToDateTime)
+    @Transform(({ value }) => { return transformToDateTime(value); })
     start: Date;
 
     /** 検索対象終了日時 */
     @IsDate()
     @IsOptional()
-    @Transform(transformToDateTime)
+    @Transform(({ value }) => { return transformToDateTime(value); })
     end: Date;
 }
 
