@@ -13,8 +13,9 @@ import { Brackets, EntityManager, In } from 'typeorm';
 import { connectDatabase } from '../common/Connection';
 import OperatorDomain from "../domains/OperatorDomain";
 import { Code } from '../resources/dto/PostCountReqDto';
-/* eslint-enable */
 import moment = require('moment-timezone');
+import { CMatrix } from '../resources/dto/PostLocalReqDto';
+/* eslint-enable */
 
 /**
  * CToken台帳エンティティ操作用 サービスクラス
@@ -176,7 +177,7 @@ export class EntityOperation {
      * cmatrixhashを更新する
      */
     static async updateCMatrixHash (em: EntityManager, id: number, cmatrixHash: string, operator: OperatorDomain) {
-        const entity = await em.getRepository(CMatrixEntity).findOne(id);
+        const entity = await em.getRepository(CMatrixEntity).findOneBy({ id: id });
         entity.cmatrixHash = cmatrixHash;
         entity.updatedBy = operator.loginId;
         await em.getRepository(CMatrixEntity).save(entity);
@@ -186,7 +187,7 @@ export class EntityOperation {
      * cmatrixを論理削除する
      */
     static async deleteCMatrix (em: EntityManager, id: number, operator: OperatorDomain) {
-        const entity = await em.getRepository(CMatrixEntity).findOne(id);
+        const entity = await em.getRepository(CMatrixEntity).findOneBy({ id: id });
         entity.isDisabled = true;
         entity.updatedBy = operator.loginId;
         await em.getRepository(CMatrixEntity).save(entity);
@@ -196,7 +197,7 @@ export class EntityOperation {
      * rowHashを論理削除する
      */
     static async deleteRowHash (em: EntityManager, id: number, operator: OperatorDomain) {
-        const entity = await em.getRepository(RowHashEntity).findOne(id);
+        const entity = await em.getRepository(RowHashEntity).findOneBy({ id: id });
         entity.isDisabled = true;
         entity.updatedBy = operator.loginId;
         await em.getRepository(RowHashEntity).save(entity);
@@ -206,7 +207,7 @@ export class EntityOperation {
      * documentを論理削除する
      */
     static async deleteDocument (em: EntityManager, id: number, operator: OperatorDomain) {
-        const entity = await em.getRepository(DocumentEntity).findOne(id);
+        const entity = await em.getRepository(DocumentEntity).findOneBy({ id: id });
         entity.isDisabled = true;
         entity.updatedBy = operator.loginId;
         await em.getRepository(DocumentEntity).save(entity);
