@@ -3,7 +3,8 @@ Released under the MIT license.
 https://opensource.org/licenses/mit-license.php
 */
 /* eslint-disable */
-import express = require('express');
+import * as express from 'express';
+import { RequestHandler } from 'express';
 import { Server } from 'net';
 import Config from './Config'
 /* eslint-enable */
@@ -37,8 +38,8 @@ export class CtokenLedgerServer {
     server: Server;
     constructor (status: number) {
         this.app = express();
-        this.app.use(express.json({ limit: '100mb' }));
-        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(express.json({ limit: '100mb' }) as RequestHandler);
+        this.app.use(express.urlencoded({ extended: false }) as RequestHandler);
         this.app.post('/ctoken-ledger/local', (req: express.Request, res: express.Response) => {
             res.status(status).end();
         });
@@ -51,8 +52,8 @@ export class OperatorServer {
     server: Server;
     constructor (status: number, type: number) {
         this.app = express();
-        this.app.use(express.json({ limit: '100mb' }));
-        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(express.json({ limit: '100mb' }) as RequestHandler);
+        this.app.use(express.urlencoded({ extended: false }) as RequestHandler);
         this.app.post('/operator/session', (req: express.Request, res: express.Response) => {
             if (status === 200 && req.body.sessionId === '5b4fcfb619a4fd3215e3582412eecfd5ab7e06eb112c52402805a730e8737899') {
                 res.status(200)
@@ -119,8 +120,8 @@ export class CatalogServer {
     server: Server;
     constructor (status: number) {
         this.app = express();
-        this.app.use(express.json({ limit: '100mb' }));
-        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(express.json({ limit: '100mb' }) as RequestHandler);
+        this.app.use(express.urlencoded({ extended: false }) as RequestHandler);
         this.app.get('/catalog/name', (req: express.Request, res: express.Response) => {
             res.status(status);
             res.json({
@@ -319,8 +320,8 @@ export class MyConditionBookManageServer {
     server: Server;
     constructor (status: number) {
         this.app = express();
-        this.app.use(express.json({ limit: '100mb' }));
-        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(express.json({ limit: '100mb' }) as RequestHandler);
+        this.app.use(express.urlencoded({ extended: false }) as RequestHandler);
 
         // 本人性確認事項検索
         this.app.post('/book-manage/identity', (req: express.Request, res: express.Response) => {

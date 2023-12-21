@@ -96,6 +96,7 @@ describe('Ctoken-Ledger Service', () => {
                 SET is_disabled = false
                 ;
                 `);
+            await connection.destroy();
 
             try {
                 expect(response.status).toBe(200);
