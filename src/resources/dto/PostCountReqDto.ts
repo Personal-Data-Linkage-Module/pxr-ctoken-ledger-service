@@ -19,25 +19,25 @@ export class SearchPeriod {
     /** 検索対象開始日時 */
     @IsDate()
     @IsOptional()
-    @Transform(transformToDateTime)
+    @Transform(({ value }) => { return transformToDateTime(value); })
     start: Date;
 
     /** 検索対象終了日時 */
     @IsDate()
     @IsOptional()
-    @Transform(transformToDateTime)
+    @Transform(({ value }) => { return transformToDateTime(value); })
     end: Date;
 }
 
 export class Code {
     @IsNumber()
     @IsDefined()
-    @Transform(transformToNumber)
+    @Transform(({ value }) => { return transformToNumber(value); })
     _value: number;
 
     @IsNumber()
     @IsDefined()
-    @Transform(transformToNumber)
+    @Transform(({ value }) => { return transformToNumber(value); })
     _ver: number;
 }
 /* eslint-enable */
@@ -47,31 +47,31 @@ export default class PostCountReqDto {
     @IsOptional()
     @ValidateNested()
     @Type(() => SearchPeriod)
-    createAt: SearchPeriod;
+        createAt: SearchPeriod;
 
     /** 検索PXR-ID */
     @IsString()
     @IsOptional()
-    pxrId: string;
+        pxrId: string;
 
     /** document */
     @IsArray()
     @IsOptional()
     @ValidateNested()
     @Type(() => Code)
-    document: Code[];
+        document: Code[];
 
     /** event */
     @IsArray()
     @IsOptional()
     @ValidateNested()
     @Type(() => Code)
-    event: Code[];
+        event: Code[];
 
     /** thing */
     @IsArray()
     @IsOptional()
     @ValidateNested()
     @Type(() => Code)
-    thing: Code[];
+        thing: Code[];
 }
