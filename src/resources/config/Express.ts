@@ -3,11 +3,11 @@ Released under the MIT license.
 https://opensource.org/licenses/mit-license.php
 */
 /* eslint-disable */
-/* eslint-enable */
 import 'reflect-metadata';
 import * as express from 'express';
+import { RequestHandler } from 'express';
 import * as bodyParser from 'body-parser';
-import * as helmet from 'helmet';
+import helmet from "helmet";
 import { useExpressServer, useContainer } from 'routing-controllers';
 import { Container } from 'typedi';
 import setupLogging from './Logging';
@@ -21,6 +21,7 @@ import CountController from '../CountController';
 import SearchController from '../SearchController';
 import SwaggerUi = require('swagger-ui-express');
 import cookieParser = require('cookie-parser');
+/* eslint-enable */
 
 export class ExpressConfig {
     app: express.Express;
@@ -33,8 +34,8 @@ export class ExpressConfig {
         setupHealthCheck(this.app);
         // SDE-MSA-PRIN ステートレスにする （MSA-PRIN-SD-01）
 
-        this.app.use(bodyParser.json({ limit: '100mb' }));
-        this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(bodyParser.json({ limit: '100mb' }) as RequestHandler);
+        this.app.use(bodyParser.urlencoded({ extended: false }) as RequestHandler);
         this.app.use(cookieParser());
 
         /**
