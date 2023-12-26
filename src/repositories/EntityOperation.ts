@@ -13,8 +13,9 @@ import { Brackets, EntityManager, In } from 'typeorm';
 import { connectDatabase } from '../common/Connection';
 import OperatorDomain from "../domains/OperatorDomain";
 import { Code } from '../resources/dto/PostCountReqDto';
-/* eslint-enable */
 import moment = require('moment-timezone');
+import { CMatrix } from '../resources/dto/PostLocalReqDto';
+/* eslint-enable */
 
 /**
  * CToken台帳エンティティ操作用 サービスクラス
@@ -35,14 +36,27 @@ export class EntityOperation {
     }
 
     /**
+     * IDでCTokenを取得
+     * @param em
+     * @param pxrId
+     */
+    static async getCTokenById (em: EntityManager, id: number): Promise<CTokenEntity> {
+        const repository = em.getRepository(CTokenEntity);
+        const sql = repository.createQueryBuilder('ctoken')
+            .where('ctoken.id = :id', { id: id })
+            .andWhere('ctoken.isDisabled = false');
+        const result = await sql.getOne();
+        return result;
+    }
+
+    /**
      * 各 Identifier が指定された rowhash を保持する CMatrix を取得
      * @param em
-     * @param ctokenId
      * @param docIdentifier
      * @param eventIdentifier
      * @param thingIdentifier
      */
-    static async getCMatrixByIdentifier (em: EntityManager, ctokenId: number, docIdentifier: string[], eventIdentifier: string[], thingIdentifier: string[]): Promise<CMatrixEntity[]> {
+    static async getCMatrixByIdentifier (em: EntityManager, docIdentifier: string[], eventIdentifier: string[], thingIdentifier: string[]): Promise<CMatrixEntity[]> {
         const repository = em.getRepository(CMatrixEntity);
         const query = repository.createQueryBuilder('cmatrix')
             .innerJoinAndSelect(
@@ -55,8 +69,7 @@ export class EntityOperation {
                 'documents',
                 'documents.isDisabled = false'
             )
-            .where('cmatrix.ctokenId = :ctokenId', { ctokenId: ctokenId })
-            .andWhere('cmatrix.isDisabled = false');
+            .where('cmatrix.isDisabled = false');
         if (docIdentifier && Array.isArray(docIdentifier) && docIdentifier.length > 0) {
             query.andWhere('documents.docIdentifier in (:...docIdentifier)', { docIdentifier: docIdentifier });
         }
@@ -176,7 +189,7 @@ export class EntityOperation {
      * cmatrixhashを更新する
      */
     static async updateCMatrixHash (em: EntityManager, id: number, cmatrixHash: string, operator: OperatorDomain) {
-        const entity = await em.getRepository(CMatrixEntity).findOne(id);
+        const entity = await em.getRepository(CMatrixEntity).findOneBy({ id: id });
         entity.cmatrixHash = cmatrixHash;
         entity.updatedBy = operator.loginId;
         await em.getRepository(CMatrixEntity).save(entity);
@@ -186,7 +199,7 @@ export class EntityOperation {
      * cmatrixを論理削除する
      */
     static async deleteCMatrix (em: EntityManager, id: number, operator: OperatorDomain) {
-        const entity = await em.getRepository(CMatrixEntity).findOne(id);
+        const entity = await em.getRepository(CMatrixEntity).findOneBy({ id: id });
         entity.isDisabled = true;
         entity.updatedBy = operator.loginId;
         await em.getRepository(CMatrixEntity).save(entity);
@@ -196,7 +209,7 @@ export class EntityOperation {
      * rowHashを論理削除する
      */
     static async deleteRowHash (em: EntityManager, id: number, operator: OperatorDomain) {
-        const entity = await em.getRepository(RowHashEntity).findOne(id);
+        const entity = await em.getRepository(RowHashEntity).findOneBy({ id: id });
         entity.isDisabled = true;
         entity.updatedBy = operator.loginId;
         await em.getRepository(RowHashEntity).save(entity);
@@ -206,7 +219,7 @@ export class EntityOperation {
      * documentを論理削除する
      */
     static async deleteDocument (em: EntityManager, id: number, operator: OperatorDomain) {
-        const entity = await em.getRepository(DocumentEntity).findOne(id);
+        const entity = await em.getRepository(DocumentEntity).findOneBy({ id: id });
         entity.isDisabled = true;
         entity.updatedBy = operator.loginId;
         await em.getRepository(DocumentEntity).save(entity);

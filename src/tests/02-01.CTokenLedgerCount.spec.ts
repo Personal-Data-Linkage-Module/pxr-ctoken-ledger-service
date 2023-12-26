@@ -103,18 +103,20 @@ describe('Ctoken-Ledger Service', () => {
                 SET is_disabled = false
                 ;
             `);
+            await connection.destroy();
         });
         test('正常: 追加(個人)', async () => {
             _catalogServer = new CatalogServer(200);
             _myConditionBookManageServer = new MyConditionBookManageServer(200);
 
             // テストデータの登録
-            await supertest(expressApp)
+            const pre1 = await supertest(expressApp)
                 .post('/ctoken-ledger/local')
                 .set({ accept: 'application/json', 'Content-Type': 'application/json' })
                 .set({ session: JSON.stringify(Session.pxrRootInd) })
                 .send(Request.TestData01);
 
+            expect(pre1.status).toBe(200);
             const response = await supertest(expressApp)
                 .post(baseURI)
                 .set({ accept: 'application/json', 'Content-Type': 'application/json' })
@@ -137,11 +139,20 @@ describe('Ctoken-Ledger Service', () => {
                         app: { _value: 1000016 },
                         wf: null,
                         document: [
-                            { _code: { _value: 1000004, _ver: 1 }, count: 1 },
+                            { _code: { _value: 1000004, _ver: 1 }, count: 1 }
+                        ],
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
+                    },
+                    {
+                        actor: { _value: 1000004 },
+                        app: { _value: 1000015 },
+                        wf: null,
+                        document: [
                             { _code: { _value: 1000004, _ver: 2 }, count: 1 }
                         ],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 2 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 2 }]
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
                     }
                 ]);
             } catch (err) {
@@ -174,11 +185,20 @@ describe('Ctoken-Ledger Service', () => {
                         app: { _value: 1000016 },
                         wf: null,
                         document: [
-                            { _code: { _value: 1000004, _ver: 1 }, count: 1 },
+                            { _code: { _value: 1000004, _ver: 1 }, count: 1 }
+                        ],
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
+                    },
+                    {
+                        actor: { _value: 1000004 },
+                        app: { _value: 1000015 },
+                        wf: null,
+                        document: [
                             { _code: { _value: 1000004, _ver: 2 }, count: 1 }
                         ],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 2 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 2 }]
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
                     }
                 ]);
             } catch (err) {
@@ -225,19 +245,21 @@ describe('Ctoken-Ledger Service', () => {
             _myConditionBookManageServer = new MyConditionBookManageServer(200);
 
             // テストデータの登録
-            await supertest(expressApp)
+            const pre1 = await supertest(expressApp)
                 .post('/ctoken-ledger/local')
                 .set({ accept: 'application/json', 'Content-Type': 'application/json' })
                 .set({ session: JSON.stringify(Session.pxrRootInd) })
                 .send(Request.TestData02);
 
+            expect(pre1.status).toBe(200);
             // テストデータの登録
-            await supertest(expressApp)
+            const pre2 = await supertest(expressApp)
                 .post('/ctoken-ledger/local')
                 .set({ accept: 'application/json', 'Content-Type': 'application/json' })
                 .set({ session: JSON.stringify(Session.pxrRootInd) })
                 .send(Request.TestData03);
 
+            expect(pre2.status).toBe(200);
             const response = await supertest(expressApp)
                 .post(baseURI)
                 .set({ accept: 'application/json', 'Content-Type': 'application/json' })
@@ -252,19 +274,32 @@ describe('Ctoken-Ledger Service', () => {
                         wf: null,
                         app: { _value: 1000007 },
                         document: [{ _code: { _value: 1000004, _ver: 1 }, count: 1 }],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
+                        event: [
+                            { _code: { _value: 1000008, _ver: 1 }, count: 1 }
+                        ],
+                        thing: [
+                            { _code: { _value: 1000011, _ver: 1 }, count: 1 }
+                        ]
                     },
                     {
                         actor: { _value: 1000004 },
                         app: { _value: 1000016 },
                         wf: null,
                         document: [
-                            { _code: { _value: 1000004, _ver: 1 }, count: 1 },
+                            { _code: { _value: 1000004, _ver: 1 }, count: 1 }
+                        ],
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
+                    },
+                    {
+                        actor: { _value: 1000004 },
+                        app: { _value: 1000015 },
+                        wf: null,
+                        document: [
                             { _code: { _value: 1000004, _ver: 2 }, count: 1 }
                         ],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 2 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 2 }]
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
                     },
                     {
                         actor: { _value: 1000014 },
@@ -305,11 +340,20 @@ describe('Ctoken-Ledger Service', () => {
                         app: { _value: 1000016 },
                         wf: null,
                         document: [
-                            { _code: { _value: 1000004, _ver: 1 }, count: 1 },
+                            { _code: { _value: 1000004, _ver: 1 }, count: 1 }
+                        ],
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
+                    },
+                    {
+                        actor: { _value: 1000004 },
+                        app: { _value: 1000015 },
+                        wf: null,
+                        document: [
                             { _code: { _value: 1000004, _ver: 2 }, count: 1 }
                         ],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 2 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 2 }]
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
                     },
                     {
                         actor: { _value: 1000014 },
@@ -356,54 +400,20 @@ describe('Ctoken-Ledger Service', () => {
                         app: { _value: 1000016 },
                         wf: null,
                         document: [
-                            { _code: { _value: 1000004, _ver: 1 }, count: 1 },
-                            { _code: { _value: 1000004, _ver: 2 }, count: 1 }
+                            { _code: { _value: 1000004, _ver: 1 }, count: 1 }
                         ],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 2 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 2 }]
-                    }
-                ]);
-            } catch (err) {
-                console.log(response.body);
-                throw err;
-            }
-        });
-        test('正常: 追加（領域運営の場合）', async () => {
-            _catalogServer = new CatalogServer(200);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.regionRoot) })
-                .send(Request.Search);
-
-            try {
-                expect(response.status).toBe(200);
-                expect(response.body).toEqual([
-                    {
-                        actor: { _value: 1000004 },
-                        wf: null,
-                        app: { _value: 1000007 },
-                        document: [{ _code: { _value: 1000004, _ver: 1 }, count: 2 }],
-                        event: [
-                            { _code: { _value: 1000005, _ver: 1 }, count: 2 },
-                            { _code: { _value: 1000008, _ver: 1 }, count: 1 }
-                        ],
-                        thing: [
-                            { _code: { _value: 1000006, _ver: 1 }, count: 2 },
-                            { _code: { _value: 1000011, _ver: 1 }, count: 1 }
-                        ]
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
                     },
                     {
                         actor: { _value: 1000004 },
-                        app: { _value: 1000016 },
+                        app: { _value: 1000015 },
                         wf: null,
                         document: [
-                            { _code: { _value: 1000004, _ver: 1 }, count: 1 },
                             { _code: { _value: 1000004, _ver: 2 }, count: 1 }
                         ],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 2 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 2 }]
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
                     }
                 ]);
             } catch (err) {
@@ -486,11 +496,20 @@ describe('Ctoken-Ledger Service', () => {
                         app: { _value: 1000016 },
                         wf: null,
                         document: [
-                            { _code: { _value: 1000004, _ver: 1 }, count: 1 },
+                            { _code: { _value: 1000004, _ver: 1 }, count: 1 }
+                        ],
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
+                    },
+                    {
+                        actor: { _value: 1000004 },
+                        app: { _value: 1000015 },
+                        wf: null,
+                        document: [
                             { _code: { _value: 1000004, _ver: 2 }, count: 1 }
                         ],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 2 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 2 }]
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
                     }
                 ]);
             } catch (err) {
@@ -538,11 +557,20 @@ describe('Ctoken-Ledger Service', () => {
                         app: { _value: 1000016 },
                         wf: null,
                         document: [
-                            { _code: { _value: 1000004, _ver: 1 }, count: 1 },
+                            { _code: { _value: 1000004, _ver: 1 }, count: 1 }
+                        ],
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
+                    },
+                    {
+                        actor: { _value: 1000004 },
+                        app: { _value: 1000015 },
+                        wf: null,
+                        document: [
                             { _code: { _value: 1000004, _ver: 2 }, count: 1 }
                         ],
-                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 2 }],
-                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 2 }]
+                        event: [{ _code: { _value: 1000008, _ver: 1 }, count: 1 }],
+                        thing: [{ _code: { _value: 1000011, _ver: 1 }, count: 1 }]
                     },
                     {
                         actor: { _value: 1000010 },

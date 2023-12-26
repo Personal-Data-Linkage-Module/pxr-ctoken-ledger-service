@@ -12,6 +12,7 @@ import PostLocalReqDto, { CMatrix, Document, Event, Thing, CMatrixForDelete, Doc
 import PostLocalResDto from '../resources/dto/PostLocalResDto';
 import { connectDatabase } from '../common/Connection';
 import { EntityManager } from 'typeorm';
+import { applicationLogger } from '../common/logging';
 /* eslint-enable */
 import Config from '../common/Config';
 import BookManageDto from './dto/BookManageDto';
@@ -64,13 +65,24 @@ export default class LocalService {
         return res.toJSON();
     }
 
-    private static getPxrId (books: any, cmatrix: CMatrix|CMatrixForDelete) {
+    // CmatrixのuserIdとwf/appカタログコードを用いてpxrIdを特定
+    private static getPxrId (books: any, cmatrix: CMatrix) {
         let pxrId = '';
         let exists = false;
+        // 必須パラメータのcmatrix.eventからactor, wf, appコード取得
+        const cmatrixActorCode = cmatrix.event.eventActorCode;
+        const cmatrixAppCode = cmatrix.event.eventAppCatalogCode;
+
         for (const book of books) {
             if (book['cooperation'] && Array.isArray(book['cooperation'])) {
                 for (const cooperation of book['cooperation']) {
-                    if (cooperation['userId'] === cmatrix.userId) {
+                    if (cooperation['userId'] === cmatrix.userId &&
+                        Number(cooperation['actor']['_value']) === Number(cmatrixActorCode) &&
+                        (
+                            (cooperation['app'] && Number(cooperation['app']['_value']) === Number(cmatrixAppCode))
+                        )
+                    ) {
+                        // userId一致＆actorCode一致＆wf/appコードのいずれかが一致するものを取得
                         pxrId = book['pxrId'];
                         exists = true;
                         break;
@@ -296,7 +308,7 @@ export default class LocalService {
             }
 
             // 更新対象の CMatrix を取得
-            const cmatrixs = await EntityOperation.getCMatrixByIdentifier(transaction, cToken.id, docIdentifier, eventIdentifier, thingIdentifier);
+            const cmatrixs = await EntityOperation.getCMatrixByIdentifier(transaction, docIdentifier, eventIdentifier, thingIdentifier);
 
             for (let cmatrix of cmatrixs) {
                 // 配下の rowhash をすべて含めて再取得
@@ -396,14 +408,7 @@ export default class LocalService {
     private static async deleteCMatrix (transaction: EntityManager, operator: OperatorDomain, books: any, del: CMatrixForDelete[]) {
         // リクエストをループさせる
         for (const delCmatrix of del) {
-            // PXR-IDの特定
-            const pxrId = this.getPxrId(books, delCmatrix);
-
-            // PXR-IDでのCToken検索
-            const cToken: CTokenEntity = await EntityOperation.getCTokenByPxrId(transaction, pxrId);
-            if (!cToken) {
-                continue;
-            }
+            // PXR-IDの特定ができないため、更新対象CMatrixからctokenを取得する
 
             // 更新対象の取得条件
             const docIdentifier: string[] = [];
@@ -418,7 +423,15 @@ export default class LocalService {
             }
 
             // 更新対象の CMatrix を取得
-            const cmatrixs = await EntityOperation.getCMatrixByIdentifier(transaction, cToken.id, docIdentifier, eventIdentifier, thingIdentifier);
+            const cmatrixs = await EntityOperation.getCMatrixByIdentifier(transaction, docIdentifier, eventIdentifier, thingIdentifier);
+            if (!cmatrixs || cmatrixs.length === 0) {
+                applicationLogger.info('以下条件に該当する削除対象CMatrixがありません。');
+                applicationLogger.info(JSON.stringify(delCmatrix));
+                continue;
+            }
+
+            // CMatrix.ctokenIdからCToken検索
+            const cToken: CTokenEntity = await EntityOperation.getCTokenById(transaction, cmatrixs[0].ctokenId);
 
             for (let cmatrix of cmatrixs) {
                 // 配下の rowhash をすべて含めて再取得

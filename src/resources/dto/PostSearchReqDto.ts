@@ -23,19 +23,19 @@ export class CodeVersionObject {
     /**
      * コード
      */
-    @Transform(transformToNumber)
+    @Transform(({ value }) => { return transformToNumber(value); })
     @IsNumber()
     @IsNotEmpty()
     @IsDefined()
-    _value: number;
+        _value: number;
 
     /**
      * バージョン
      */
-    @Transform(transformToNumber)
+    @Transform(({ value }) => { return transformToNumber(value); })
     @IsNumber()
     @IsDefined()
-    _ver: number;
+        _ver: number;
 }
 
 export class Condition {
@@ -45,7 +45,7 @@ export class Condition {
     @IsDefined()
     @IsNotEmpty()
     @IsString()
-    type: string;
+        type: string;
 
     /**
      * カタログコード
@@ -54,24 +54,24 @@ export class Condition {
     @IsNotEmpty()
     @Type(() => CodeVersionObject)
     @ValidateNested()
-    _code: CodeVersionObject;
+        _code: CodeVersionObject;
 
     /**
      * 最小値
      */
     @IsDefined()
     @IsNotEmpty()
-    @Transform(transformToNumber)
+    @Transform(({ value }) => { return transformToNumber(value); })
     @IsNumber()
-    min: number;
+        min: number;
 
     /**
      * 最大値
      */
     @IsOptional()
-    @Transform(transformToNumber)
+    @Transform(({ value }) => { return transformToNumber(value); })
     @IsNumber()
-    max: number;
+        max: number;
 }
 
 export default class PostSearchReqDto {
@@ -81,8 +81,7 @@ export default class PostSearchReqDto {
     @IsDefined()
     @IsNotEmpty()
     @IsArray()
-    @ValidateNested({ each: true })
-    pxrId: string[];
+        pxrId: string[];
 
     /**
      * 検索条件
@@ -92,5 +91,5 @@ export default class PostSearchReqDto {
     @IsArray()
     @Type(() => Condition)
     @ValidateNested({ each: true })
-    condition: Condition[];
+        condition: Condition[];
 }

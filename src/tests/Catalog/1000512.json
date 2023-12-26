@@ -1,0 +1,41 @@
+{
+    "catalogItem": {
+      "ns": "catalog/ext/test-org/actor/app",
+      "name": "テストアクターカタログAPP",
+      "_code": {
+        "_value": 1000512,
+        "_ver": 1
+      },
+      "inherit": {
+        "_value": 50,
+        "_ver": null
+      },
+      "description": "ワークフローアクターの定義です。"
+    },
+    "template": {
+      "_code": {
+        "_value": 1000512,
+        "_ver": 1
+      },
+      "app": [
+        {
+          "_value": 1000107,
+          "_ver": 1
+        },
+        {
+          "_value": 1000117,
+          "_ver": 1
+        },
+        {
+          "_value": 1000127,
+          "_ver": 1
+        }
+      ],
+      "main-block": {
+          "_value": 1000110,
+          "_ver": 1
+      }
+    },
+    "prop": [],
+    "attribute": null
+}

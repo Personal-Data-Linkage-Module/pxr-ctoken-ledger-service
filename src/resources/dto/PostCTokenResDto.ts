@@ -33,10 +33,12 @@ export default class PostCTokenResDto {
                     _value: Number(data['actorCode']),
                     _ver: Number(data['actorVer'])
                 },
-                app: data['appCode'] ? {
-                    _value: Number(data['appCode']),
-                    _ver: Number(data['appVer'])
-                } : undefined,
+                app: data['appCode']
+                    ? {
+                        _value: Number(data['appCode']),
+                        _ver: Number(data['appVer'])
+                    }
+                    : undefined,
                 wf: wf,
                 createdAt: data['createdAt'] ? moment(data['createdAt']).tz(config['timezone']).format('YYYY-MM-DDTHH:mm:ss.SSSZZ') : null,
                 code: {

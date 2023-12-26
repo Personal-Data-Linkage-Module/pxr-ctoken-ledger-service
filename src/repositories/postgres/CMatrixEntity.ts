@@ -27,35 +27,35 @@ export default class CMatrixEntity extends BaseEntity {
 
     /** CTokenID */
     @Column({ type: 'bigint', nullable: false, name: 'ctoken_id' })
-    ctokenId: number;
+        ctokenId: number;
 
     /** アクターカタログコード */
     @Column({ type: 'bigint', nullable: false, name: 'actor_catalog_code' })
-    actorCatalogCode: number;
+        actorCatalogCode: number;
 
     /** アクターカタログバージョン */
     @Column({ type: 'bigint', nullable: false, name: 'actor_catalog_version' })
-    actorCatalogVersion: number;
+        actorCatalogVersion: number;
 
     /** 1_1: 個人識別子 */
     @Column({ type: 'varchar', length: 255, nullable: false, name: '1_1' })
-    personIdentifier: string;
+        personIdentifier: string;
 
     /** 行列ハッシュ */
     @Column({ type: 'varchar', length: 255, nullable: false, name: 'cmatrix_hash' })
-    cmatrixHash: string;
+        cmatrixHash: string;
 
     /** 行列ハッシュ生成時間 */
     @Column({ type: 'timestamp without time zone', nullable: false, name: 'cmatrix_hash_create_at', onUpdate: 'now()' })
-    cmatrixHashCreateAt: Date;
+        cmatrixHashCreateAt: Date;
 
     /** 削除フラグ */
     @Column({ type: 'boolean', nullable: false, default: false, name: 'is_disabled' })
-    isDisabled: boolean = false;
+        isDisabled: boolean = false;
 
     /** 登録者 */
     @Column({ type: 'varchar', length: 255, nullable: false, name: 'created_by' })
-    createdBy: string = '';
+        createdBy: string = '';
 
     /** 登録日時 */
     @CreateDateColumn({ type: 'timestamp without time zone', name: 'created_at' })
@@ -63,7 +63,7 @@ export default class CMatrixEntity extends BaseEntity {
 
     /** 更新者 */
     @Column({ type: 'varchar', length: 255, nullable: false, name: 'updated_by' })
-    updatedBy: string = '';
+        updatedBy: string = '';
 
     /** 更新日時 */
     @UpdateDateColumn({ type: 'timestamp without time zone', name: 'updated_at', onUpdate: 'now()' })
@@ -72,10 +72,10 @@ export default class CMatrixEntity extends BaseEntity {
     /** CTokenテーブルのレコード */
     @ManyToOne(type => CTokenEntity, ctoken => ctoken.cmatrixs)
     @JoinColumn({ name: 'ctoken_id', referencedColumnName: 'id' })
-    ctoken: CTokenEntity;
+        ctoken: CTokenEntity;
 
     /** 行ハッシュテーブルのレコード */
     @OneToMany(type => RowHashEntity, rowHash => rowHash.matrix)
     @JoinColumn({ name: 'id', referencedColumnName: 'matrixId' })
-    rowHashs: RowHashEntity[];
+        rowHashs: RowHashEntity[];
 }

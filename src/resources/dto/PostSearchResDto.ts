@@ -9,7 +9,7 @@ export default class PostSearchResDto {
     /**
      * データカウント
      */
-    counts: Count[] = [];
+    counts: Count[] = []; // eslint-disable-line no-use-before-define
 
     /**
      * レスポンス用のオブジェクトに変換する
@@ -51,7 +51,7 @@ export class Count {
     public pxrId: string = '';
 
     /** アクターカタログコード */
-    public ctokens: CToken[] = [];
+    public ctokens: CToken[] = []; // eslint-disable-line no-use-before-define
 }
 
 export class CatalogCodeValue {
@@ -72,7 +72,7 @@ export class CToken {
     public actor: CatalogCodeValue = new CatalogCodeValue();
 
     /** ドキュメント件数 */
-    public data: DataCount[] = [];
+    public data: DataCount[] = []; // eslint-disable-line no-use-before-define
 }
 
 export class DataCount {
