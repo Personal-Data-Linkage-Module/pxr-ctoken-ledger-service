@@ -199,13 +199,7 @@ COMMENT ON COLUMN pxr_ctoken_ledger.document.created_at IS '登録日時';
 COMMENT ON COLUMN pxr_ctoken_ledger.document.updated_by IS '更新者';
 COMMENT ON COLUMN pxr_ctoken_ledger.document.updated_at IS '更新日時';
 
-
-
-
-
-
-
-
-
-
+-- ユーザーにテーブル・シーケンスの操作権限を付与
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA pxr_ctoken_ledger TO pxr_ctoken_ledger_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA pxr_ctoken_ledger TO pxr_ctoken_ledger_user;
 
