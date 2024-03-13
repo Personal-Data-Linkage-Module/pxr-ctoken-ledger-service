@@ -35,7 +35,6 @@ jobs:
       # - name: テスト結果クリア
       #   run: npm run jest-clear
       - name: テスト実行
-        id: run_test
         run: npm run test:unit
       - name: access.log
         if: always()
