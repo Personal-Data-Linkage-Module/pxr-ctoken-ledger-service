@@ -15,14 +15,14 @@ jobs:
           - 5432:5432
 
     steps:
-      - name: postgres version
-        run: psql --version
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 18
       - name: checkout
         uses: actions/checkout@v4
+      - name: postgres version
+        run: PGPASSWORD="postgres" psql -U postgres -h localhost -p 5432 -c "SELECT version();"
       - name: install
         run: npm install
       - name: build
