@@ -34,25 +34,17 @@ export default class LocalService {
      * @param dto
      */
     public static async postLocal (operator: OperatorDomain, dto: PostLocalReqDto): Promise<any> {
-        // Book取得
-        const bookManageDto = new BookManageDto();
-        bookManageDto.setOperator(operator);
-        bookManageDto.setMessage(Message);
-        bookManageDto.setUrl(Confiure.bookManage.search);
-        const bookManageService = new BookManageService();
-        const books = await bookManageService.postSearchBook(bookManageDto);
-
         // 登録
         const connection = await connectDatabase();
         await connection.transaction(async transaction => {
             if (dto.add.length > 0) {
-                await this.insertRowHash(transaction, operator, books, dto.add);
+                await this.insertRowHash(transaction, operator, dto.add);
             }
             if (dto.update.length > 0) {
-                await this.updateRowHash(transaction, operator, books, dto.update);
+                await this.updateRowHash(transaction, operator, dto.update);
             }
             if (dto.delete.length > 0) {
-                await this.deleteCMatrix(transaction, operator, books, dto.delete);
+                await this.deleteCMatrix(transaction, operator, dto.delete);
             }
             // PXRウォレット登録
         }).catch(err => {
@@ -65,55 +57,37 @@ export default class LocalService {
         return res.toJSON();
     }
 
-    // CmatrixのuserIdとwf/appカタログコードを用いてpxrIdを特定
-    private static getPxrId (books: any, cmatrix: CMatrix) {
-        let pxrId = '';
-        let exists = false;
-        // 必須パラメータのcmatrix.eventからactor, wf, appコード取得
+    // CmatrixのuserIdとappカタログコードを用いてpxrIdを特定
+    private static async getPxrId (cmatrix: CMatrix, operator: OperatorDomain): Promise<string> {
+        // 必須パラメータのcmatrix.eventからuserId,actor, appコード取得
+        const cmatrixUserId = cmatrix.userId;
         const cmatrixActorCode = cmatrix.event.eventActorCode;
         const cmatrixAppCode = cmatrix.event.eventAppCatalogCode;
 
-        for (const book of books) {
-            if (book['cooperation'] && Array.isArray(book['cooperation'])) {
-                for (const cooperation of book['cooperation']) {
-                    if (cooperation['userId'] === cmatrix.userId &&
-                        Number(cooperation['actor']['_value']) === Number(cmatrixActorCode) &&
-                        (
-                            (cooperation['app'] && Number(cooperation['app']['_value']) === Number(cmatrixAppCode))
-                        )
-                    ) {
-                        // userId一致＆actorCode一致＆wf/appコードのいずれかが一致するものを取得
-                        pxrId = book['pxrId'];
-                        exists = true;
-                        break;
-                    }
-                }
-            }
-            if (exists) {
-                break;
-            }
-        }
-        if (!exists) {
+        const bookManageService = new BookManageService();
+        const book = await bookManageService.searchUser(cmatrixUserId, cmatrixActorCode, cmatrixAppCode, null, operator);
+
+        if (!book) {
+            // Bookが取得できない場合はエラー
             throw new AppError(Message.NO_PXRID, ResponseCode.NOT_FOUND);
         }
-        return pxrId;
+        return book.pxrId;
     }
 
     /**
      * 登録
      * @param transaction
      * @param operator
-     * @param books
      * @param add
      *
      * RefactorDescription:
      *  #3814 : insertRowHashDocument
      */
-    private static async insertRowHash (transaction: EntityManager, operator: OperatorDomain, books: any, add: CMatrix[]) {
+    private static async insertRowHash (transaction: EntityManager, operator: OperatorDomain, add: CMatrix[]) {
         // リクエストをループさせる
         for (const cmatrix of add) {
             // PXR-IDの特定
-            const pxrId = this.getPxrId(books, cmatrix);
+            const pxrId = await this.getPxrId(cmatrix, operator);
 
             // matrixHashを生成する
             const cmatrixHashSrc: string[] = [];
@@ -280,17 +254,16 @@ export default class LocalService {
      * 更新
      * @param transaction
      * @param operator
-     * @param books
      * @param update
      *
      * RefactorDescription:
      *  #3814 : updateRowHashDocument
      */
-    private static async updateRowHash (transaction: EntityManager, operator: OperatorDomain, books: any, update: CMatrix[]) {
+    private static async updateRowHash (transaction: EntityManager, operator: OperatorDomain, update: CMatrix[]) {
         // リクエストをループさせる
         for (const updateCmatrix of update) {
             // PXR-IDの特定
-            const pxrId = this.getPxrId(books, updateCmatrix);
+            const pxrId = await this.getPxrId(updateCmatrix, operator);
 
             // PXR-IDでのCToken検索
             const cToken: CTokenEntity = await EntityOperation.getCTokenByPxrId(transaction, pxrId);
@@ -399,13 +372,12 @@ export default class LocalService {
      * 削除
      * @param transaction
      * @param operator
-     * @param books
      * @param del
      *
      * RefactorDescription:
      *  #3814 : deleteRowHashDocument
      */
-    private static async deleteCMatrix (transaction: EntityManager, operator: OperatorDomain, books: any, del: CMatrixForDelete[]) {
+    private static async deleteCMatrix (transaction: EntityManager, operator: OperatorDomain, del: CMatrixForDelete[]) {
         // リクエストをループさせる
         for (const delCmatrix of del) {
             // PXR-IDの特定ができないため、更新対象CMatrixからctokenを取得する

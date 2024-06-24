@@ -7,7 +7,8 @@
         "getCatalogName": "http://localhost:3001/catalog/name"
     },
     "bookManage": {
-        "search": "http://localhost:3005/book-manage/search?disableFlg=1"
+        "search": "http://localhost:3005/book-manage/search?disableFlg=1",
+        "searchUser": "http://localhost:3005/book-manage/search/user?disableFlg=1&includeDeleteCoop=1"
     },
     "timezone": "Asia/Tokyo"
 }
