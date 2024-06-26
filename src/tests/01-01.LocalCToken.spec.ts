@@ -6713,7 +6713,7 @@ describe('Ctoken-Ledger Service', () => {
                 .send(Request.Add);
 
             expect(response.status).toBe(400);
-            expect(response.body.message).toBe(Message.FAILED_BOOK_MANAGE_DATA_ACCUMU_GET);
+            expect(response.body.message).toBe(Message.FAILED_BOOK_MANAGE_SEARCH_USER);
         });
         test('異常: 追加（ステータスコード:503）', async () => {
             _myConditionBookManageServer = new MyConditionBookManageServer(500);
@@ -6725,19 +6725,7 @@ describe('Ctoken-Ledger Service', () => {
                 .send(Request.Add);
 
             expect(response.status).toBe(503);
-            expect(response.body.message).toBe(Message.FAILED_BOOK_MANAGE_DATA_ACCUMU_GET);
-        });
-        test('異常: 追加（ステータスコード:204）', async () => {
-            _myConditionBookManageServer = new MyConditionBookManageServer(204);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.wfStaff) })
-                .send(Request.Add);
-
-            expect(response.status).toBe(401);
-            expect(response.body.message).toBe(Message.FAILED_BOOK_MANAGE_DATA_ACCUMU_GET);
+            expect(response.body.message).toBe(Message.FAILED_BOOK_MANAGE_SEARCH_USER);
         });
         test('異常: Book管理サービスへの接続に失敗', async () => {
             const response = await supertest(expressApp)
@@ -6747,16 +6735,21 @@ describe('Ctoken-Ledger Service', () => {
                 .send(Request.Add);
 
             expect(response.status).toBe(503);
-            expect(response.body.message).toBe(Message.FAILED_CONNECT_TO_BOOK_MANAGE_DATA_ACCUMU_GET);
+            expect(response.body.message).toBe(Message.FAILED_CONNECT_TO_BOOK_MANAGE_SEARCH_USER);
         });
     });
 
-    /**
-     * Ctoken-Ledger登録API （6948追加分、userId重複）
-     */
-    describe('Ctoken-Ledger登録API（6948追加分、userId重複） POST: ' + baseURI, () => {
-        /**
-        test('正常: 追加、userId重複wf、同一個人', async () => {
+    describe('Ctoken-Ledger登録API（9097追加分） POST: ' + baseURI, () => {
+        // DoRequestメソッドのmock化
+        const doRequet = require('../common/DoRequest');
+        const mockDoPostRequest = jest.spyOn(doRequet, 'doPostRequest');
+        afterAll(async () => {
+            mockDoPostRequest.mockRestore();
+        });
+        beforeEach(async () => {
+            mockDoPostRequest.mockClear();
+        });
+        test('正常: 追加', async () => {
             _myConditionBookManageServer = new MyConditionBookManageServer(200);
 
             const response = await supertest(expressApp)
@@ -6766,108 +6759,18 @@ describe('Ctoken-Ledger Service', () => {
                 .send(Request.AddDuplicateUserIdSelfWf);
 
             expect(response.status).toBe(200);
-            // 標的pxrIdのctokenにリクエストのデータ識別子が紐づいていることを確認
-            const connection = await connectDatabase();
-            const addCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, row_hash."3_5_2_1", row_hash."3_5_5_1" FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'wfUser01'
-            AND row_hash."3_1_1" = 'd1da7e44-219e-4bbf-af4a-7589f8702d96';
-            `);
-            expect(addCtoken.length).toBe(1);
-            expect(addCtoken[0].pxr_id).toBe('DuplicateUserIdA');
-            expect(addCtoken[0]['3_5_2_1']).toBe('1000007');
-            expect(addCtoken[0]['3_5_5_1']).toBe(null);
+
+            // Book管理サービス.ユーザー取得APIへのリクエストの確認
+            const searchUserApiInfo = mockDoPostRequest.mock.calls.filter(elem => elem[0] === 'http://localhost:3005/book-manage/search/user?disableFlg=1&includeDeleteCoop=1');
+            const request = JSON.parse(Request.AddDuplicateUserIdSelfWf);
+            expect(JSON.parse(searchUserApiInfo[0][1]['body'])).toMatchObject({
+                actor: request.add[0].event['3_5_1_1'],
+                userId: request.add[0]['1_1'],
+                app: request.add[0].event['3_5_5_1'],
+                wf: null
+            });
         });
-         */
-        /**
-        test('正常: 追加、userId重複wf、別個人', async () => {
-            _myConditionBookManageServer = new MyConditionBookManageServer(200);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.wfManage) })
-                .send(Request.AddDuplicateUseerIdOthersWf);
-
-            expect(response.status).toBe(200);
-            // 標的pxrIdのctokenにリクエストのデータ識別子が紐づいていることを確認
-            const connection = await connectDatabase();
-            const addCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, row_hash."3_5_2_1", row_hash."3_5_5_1" FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'wfUser02'
-            AND row_hash."3_1_1" = 'b4cad926-78a5-b3b0-3d52-c89beb5fd294';
-            `);
-            expect(addCtoken.length).toBe(1);
-            expect(addCtoken[0].pxr_id).toBe('DuplicateUserIdB');
-            expect(addCtoken[0]['3_5_2_1']).toBe('1000017');
-            expect(addCtoken[0]['3_5_5_1']).toBe(null);
-        });
-         */
-        test('正常: 追加、userId重複app、別個人', async () => {
-            _myConditionBookManageServer = new MyConditionBookManageServer(200);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.appManage) })
-                .send(Request.AddDuplicateUseerIdOthersApp);
-
-            expect(response.status).toBe(200);
-            // 標的pxrIdのctokenにリクエストのデータ識別子が紐づいていることを確認
-            const connection = await connectDatabase();
-            const addCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, row_hash."3_5_2_1", row_hash."3_5_5_1" FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'appUser02'
-            AND row_hash."3_1_1" = '2a6cfaf9-6431-27fe-ae5d-665e217646d5';
-            `);
-            expect(addCtoken.length).toBe(1);
-            expect(addCtoken[0].pxr_id).toBe('DuplicateUserIdA');
-            expect(addCtoken[0]['3_5_2_1']).toBe(null);
-            expect(addCtoken[0]['3_5_5_1']).toBe('1000107');
-        });
-        /**
-        test('正常: 追加、userId重複、wf/app間で重複、別個人', async () => {
-            _myConditionBookManageServer = new MyConditionBookManageServer(200);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.wfManage) })
-                .send(Request.AddDuplicateUseerIdOthers);
-
-            expect(response.status).toBe(200);
-            // 標的pxrIdのctokenにリクエストのデータ識別子が紐づいていることを確認
-            const connection = await connectDatabase();
-            const addCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, row_hash."3_5_2_1", row_hash."3_5_5_1" FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'user03'
-            AND row_hash."3_1_1" = 'ab7f35bb-9c35-0ec7-83c9-2411f59e6390';
-            `);
-            expect(addCtoken.length).toBe(1);
-            expect(addCtoken[0].pxr_id).toBe('DuplicateUserIdA');
-            expect(addCtoken[0]['3_5_2_1']).toBe('1000027');
-            expect(addCtoken[0]['3_5_5_1']).toBe(null);
-        });
-         */
-        /**
-        test('正常: 更新、userId重複、wf、同一個人', async () => {
-            // 更新前ctoken取得
-            const connection = await connectDatabase();
-            const beforeCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, ctoken.ctoken FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'wfUser01'
-            AND row_hash."3_5_2_1" = 1000007;
-            `);
+        test('正常: 更新', async () => {
             _myConditionBookManageServer = new MyConditionBookManageServer(200);
 
             const response = await supertest(expressApp)
@@ -6877,203 +6780,28 @@ describe('Ctoken-Ledger Service', () => {
                 .send(Request.UpdateDuplicateUserIdSelfWf);
 
             expect(response.status).toBe(200);
-            // 更新前後ctoken確認
-            const afterCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, ctoken.ctoken FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'wfUser01'
-            AND row_hash."3_5_2_1" = 1000007;
-            `);
-            expect(beforeCtoken.length).toBe(1);
-            expect(afterCtoken.length).toBe(1);
-            expect(beforeCtoken[0].pxr_id === afterCtoken[0].pxr_id).toBe(true);
-            expect(beforeCtoken[0].ctoken === afterCtoken[0].ctoken).toBe(false);
+
+            // Book管理サービス.ユーザー取得APIへのリクエストの確認
+            const searchUserApiInfo = mockDoPostRequest.mock.calls.filter(elem => elem[0] === 'http://localhost:3005/book-manage/search/user?disableFlg=1&includeDeleteCoop=1');
+            const request = JSON.parse(Request.UpdateDuplicateUserIdSelfWf);
+            expect(JSON.parse(searchUserApiInfo[0][1]['body'])).toMatchObject({
+                actor: request.update[0].event['3_5_1_1'],
+                userId: request.update[0]['1_1'],
+                app: request.update[0].event['3_5_5_1'],
+                wf: null
+            });
         });
-         */
-        /**
-        test('正常: 更新、userId重複、wf、別個人', async () => {
-            // 更新前ctoken取得
-            const connection = await connectDatabase();
-            const beforeCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, ctoken.ctoken FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'wfUser02'
-            AND row_hash."3_5_2_1" = 1000017;
-            `);
+        test('異常: リクエストにappが設定されていない', async () => {
             _myConditionBookManageServer = new MyConditionBookManageServer(200);
 
             const response = await supertest(expressApp)
                 .post(baseURI)
                 .set({ accept: 'application/json', 'Content-Type': 'application/json' })
                 .set({ session: JSON.stringify(Session.wfManage) })
-                .send(Request.UpdateDuplicateUseerIdOthersWf);
+                .send(Request.noApp);
 
-            expect(response.status).toBe(200);
-            // 更新前後ctoken確認
-            const afterCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, ctoken.ctoken FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'wfUser02'
-            AND row_hash."3_5_2_1" = 1000017;
-            `);
-            expect(beforeCtoken.length).toBe(1);
-            expect(afterCtoken.length).toBe(1);
-            expect(beforeCtoken[0].pxr_id === afterCtoken[0].pxr_id).toBe(true);
-            expect(beforeCtoken[0].ctoken === afterCtoken[0].ctoken).toBe(false);
-        });
-         */
-        test('正常: 更新、userId重複、app、別個人', async () => {
-            // 更新前ctoken取得
-            const connection = await connectDatabase();
-            const beforeCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, ctoken.ctoken FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'appUser02'
-            AND row_hash."3_5_5_1" = 1000107;
-            `);
-            _myConditionBookManageServer = new MyConditionBookManageServer(200);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.appManage) })
-                .send(Request.UpdateDuplicateUseerIdOthersApp);
-
-            expect(response.status).toBe(200);
-            // 更新前後ctoken確認
-            const afterCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, ctoken.ctoken FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'appUser02'
-            AND row_hash."3_5_5_1" = 1000107;
-            `);
-            expect(beforeCtoken.length).toBe(1);
-            expect(afterCtoken.length).toBe(1);
-            expect(beforeCtoken[0].pxr_id === afterCtoken[0].pxr_id).toBe(true);
-            expect(beforeCtoken[0].ctoken === afterCtoken[0].ctoken).toBe(false);
-        });
-        /**
-        test('正常: 更新、userId重複、wf/app間で重複、別個人', async () => {
-            // 更新前ctoken取得
-            const connection = await connectDatabase();
-            const beforeCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, ctoken.ctoken FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'user03'
-            AND row_hash."3_5_2_1" = 1000027;
-            `);
-            _myConditionBookManageServer = new MyConditionBookManageServer(200);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.wfManage) })
-                .send(Request.UpdateDuplicateUseerIdOthers);
-
-            expect(response.status).toBe(200);
-            // 更新前後ctoken確認
-            const afterCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, ctoken.ctoken FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'user03'
-            AND row_hash."3_5_2_1" = 1000027;
-            `);
-            expect(beforeCtoken.length).toBe(1);
-            expect(afterCtoken.length).toBe(1);
-            expect(beforeCtoken[0].pxr_id === afterCtoken[0].pxr_id).toBe(true);
-            expect(beforeCtoken[0].ctoken === afterCtoken[0].ctoken).toBe(false);
-        });
-         */
-        /**
-        test('正常: 削除、userId重複、wf/app間で重複、別個人', async () => {
-            _myConditionBookManageServer = new MyConditionBookManageServer(200);
-            // 非削除確認のため、重複している他方にも追加処理を行う
-            const response0 = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.appManage) })
-                .send(Request.AddDuplicateUserIdOthers2);
-            expect(response0.status).toBe(200);
-            // 標的pxrIdのctokenにリクエストのデータ識別子が紐づいていることを確認
-            const connection = await connectDatabase();
-            const addCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, row_hash."3_5_2_1", row_hash."3_5_5_1" FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'user03'
-            AND row_hash."3_1_1" = '3ed6063f-8234-c46f-1947-d0c414aa0485';
-            `);
-            expect(addCtoken.length).toBe(1);
-            expect(addCtoken[0].pxr_id).toBe('DuplicateUserIdB');
-            expect(addCtoken[0]['3_5_2_1']).toBe(null);
-            expect(addCtoken[0]['3_5_5_1']).toBe('1000127');
-
-            // 削除リクエスト
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.wfManage) })
-                .send(Request.DeleteDuplicateUseerIdOthers);
-
-            expect(response.status).toBe(200);
-            // 標的のctokenに紐づくcmatrixが削除されていることを確認（全てのrow_hashを削除したためcmatrixも削除される）
-            const deleteCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, row_hash."3_5_2_1", row_hash."3_5_5_1", cmatrix.is_disabled FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'user03'
-            AND row_hash."3_1_1" = 'ab7f35bb-9c35-0ec7-83c9-2411f59e6390';
-            `);
-            expect(deleteCtoken.length).toBe(1);
-            expect(deleteCtoken[0].pxr_id).toBe('DuplicateUserIdA');
-            expect(deleteCtoken[0]['3_5_2_1']).toBe('1000027');
-            expect(deleteCtoken[0]['3_5_5_1']).toBe(null);
-            expect(deleteCtoken[0].is_disabled).toBe(true);
-            // 標的以外のctokenに紐づくcmatrixが削除されていないことを確認
-            const nonDeleteCtoken = await connection.query(`
-            SELECT ctoken.pxr_id, row_hash."3_5_2_1", row_hash."3_5_5_1", cmatrix.is_disabled FROM pxr_ctoken_ledger.ctoken
-            INNER JOIN pxr_ctoken_ledger.cmatrix ON ctoken.id = cmatrix.ctoken_id
-            INNER JOIN pxr_ctoken_ledger.row_hash ON cmatrix.id = row_hash.cmatrix_id
-            WHERE cmatrix."1_1" = 'user03'
-            AND row_hash."3_1_1" = '3ed6063f-8234-c46f-1947-d0c414aa0485';
-            `);
-            expect(nonDeleteCtoken.length).toBe(1);
-            expect(nonDeleteCtoken[0].pxr_id).toBe('DuplicateUserIdB');
-            expect(nonDeleteCtoken[0]['3_5_2_1']).toBe(null);
-            expect(nonDeleteCtoken[0]['3_5_5_1']).toBe('1000127');
-            expect(nonDeleteCtoken[0].is_disabled).toBe(false);
-        });
-         */
-        test('異常: 追加、条件に一致する連携が存在しない', async () => {
-            _myConditionBookManageServer = new MyConditionBookManageServer(200);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.wfManage) })
-                .send(Request.AddNoExistCooperate);
-
-            expect(response.status).toBe(404);
-            expect(response.body.message).toBe(Message.NO_PXRID);
-        });
-        test('異常: 更新、条件に一致する連携が存在しない', async () => {
-            _myConditionBookManageServer = new MyConditionBookManageServer(200);
-
-            const response = await supertest(expressApp)
-                .post(baseURI)
-                .set({ accept: 'application/json', 'Content-Type': 'application/json' })
-                .set({ session: JSON.stringify(Session.wfManage) })
-                .send(Request.UpdateNoExistCooperate);
-
-            expect(response.status).toBe(404);
-            expect(response.body.message).toBe(Message.NO_PXRID);
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe(Message.EMPTY_APP);
         });
     });
 });

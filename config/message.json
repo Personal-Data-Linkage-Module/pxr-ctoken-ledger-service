@@ -19,6 +19,8 @@
     "NOT_TARGET_ACTOR": "取得可能アクターではありません",
     "NOT_TARGET_DATA": "対象データが存在しません",
     "NO_USERID": "利用者IDを設定してください",
+    "EMPTY_APP": "APPが設定されていません",
+    "EMPTY_USER_ID": "利用者IDが取得できませんでした",
     "FAILED_TAKE_IDENTIFICATION": "My-Condition-Book管理サービスから本人性確認事項の取得に失敗しました",
     "CATALOG_RESPONSE_BODY": "カタログサービスのレスポンス{%s}",
     "CATALOG_RESPONSE_STATUS": "カタログサービスのレスポンス ステータスコード(%s)",
@@ -44,6 +46,8 @@
     "BOOK_MANAGE_DATA_ACCUMU_GET_RESPONSE": "My-Condition-Book管理サービス データ蓄積定義取得からのレスポンス: %s",
     "FAILED_BOOK_MANAGE_DATA_ACCUMU_GET": "MyConditionBook管理サービス データ蓄積定義取得に失敗しました",
     "FAILED_CONNECT_TO_BOOK_MANAGE_DATA_ACCUMU_GET": "MyConditionBook管理サービス データ蓄積定義取得への接続に失敗しました",
+    "FAILED_BOOK_MANAGE_SEARCH_USER": "MyConditionBook管理サービス ユーザー取得に失敗しました",
+    "FAILED_CONNECT_TO_BOOK_MANAGE_SEARCH_USER": "MyConditionBook管理サービス ユーザー取得への接続に失敗しました",
     "FAILED_MAKE_SERVICE_PROVIDER_LIST": "サービスプロバイダーのカタログコード取得に失敗しました",
     "validation": {
         "isArray": "配列ではありません",

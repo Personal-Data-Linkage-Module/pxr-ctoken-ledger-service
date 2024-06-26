@@ -957,6 +957,107 @@ export class MyConditionBookManageServer {
                 res.status(204).end();
             }
         });
+        this.app.post('/book-manage/search/user', (req: express.Request, res: express.Response) => {
+            if (status === 200) {
+                if (req.body.userId === 'no_pxr_id_user') {
+                    res.status(204).end();
+                }
+                res.status(200).json(
+                    {
+                        pxrId: 'wf-pj2-2-test-01',
+                        attributes: null,
+                        cooperation: [
+                            {
+                                actor: {
+                                    _value: req.body.actor,
+                                    _ver: 1
+                                },
+                                app: req.body.app
+                                    ? {
+                                        _value: req.body.app,
+                                        _ver: 1
+                                    }
+                                    : null,
+                                wf: req.body.wf
+                                    ? {
+                                        _value: '1000007',
+                                        _ver: 1
+                                    }
+                                    : null,
+                                userId: req.body.userId,
+                                startAt: '2020-07-31T01:42:08.504+0900',
+                                status: 1
+                            }
+                        ],
+                        userInformation: [
+                            {
+                                template: {
+                                    _code: {
+                                        _value: 30001,
+                                        _ver: 1
+                                    },
+                                    'item-group': [
+                                        {
+                                            title: '氏名',
+                                            item: [
+                                                {
+                                                    title: '姓',
+                                                    type: {
+                                                        _value: 30019,
+                                                        _ver: 1
+                                                    },
+                                                    content: 'デモ０１'
+                                                },
+                                                {
+                                                    title: '名',
+                                                    type: {
+                                                        _value: 30020,
+                                                        _ver: 1
+                                                    },
+                                                    content: '太郎'
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            title: '性別',
+                                            item: [
+                                                {
+                                                    title: '性別',
+                                                    type: {
+                                                        _value: 30021,
+                                                        _ver: 1
+                                                    },
+                                                    content: '男'
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            title: '生年月日',
+                                            item: [
+                                                {
+                                                    title: '生年月日',
+                                                    type: {
+                                                        _value: 30022,
+                                                        _ver: 1
+                                                    },
+                                                    content: '2000-01-01'
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                );
+            } else if (status === 400) {
+                res.status(400).end();
+            } else if (status === 500) {
+                res.status(500).end();
+            } else if (status === 204) {
+                res.status(204).end();
+            }
+        });
         this.server = this.app.listen(3005);
     }
 }
